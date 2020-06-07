@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BLEapp</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="menu_scan">scan</string>
+    <string name="menu_stop">stop</string>
+
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="title_devices">BLE Device Scan</string>
+    <string name="error_bluetooth_not_supported">Bluetooth is not supported.</string>
+</resources>
