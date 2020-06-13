@@ -13,4 +13,6 @@
         android:title="@string/disconnect"
         android:orderInCategory="101"
         app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/back"
+        android:title="SCAN DEVICE" />
 </menu>

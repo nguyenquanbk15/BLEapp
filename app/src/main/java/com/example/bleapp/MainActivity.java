@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,7 +29,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ListView lvBLEDevice;
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayAdapter<String> BLEListAdapter;
     private ArrayList<String> listDevice = new ArrayList<>();
@@ -47,9 +48,25 @@ public class MainActivity extends AppCompatActivity {
         //getActionBar().setTitle(R.string.title_devices);
         mHandler = new Handler();
 
-        lvBLEDevice = findViewById(R.id.lv_list_ble_device);
+        ListView lvBLEDevice = findViewById(R.id.lv_list_ble_device);
         BLEListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         lvBLEDevice.setAdapter(BLEListAdapter);
+
+        lvBLEDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mScanning) {
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mScanning = false;
+                }
+                String device = (String) parent.getItemAtPosition(position);
+                //String address = device.substring()
+                //final Intent deviceIntent = new Intent(this, ControlActivity.class);
+                final Intent deviceIntent = new Intent(MainActivity.this, ControlActivity.class);
+                deviceIntent.putExtra(ControlActivity.EXTRAS_DEVICE_ADDRESS, device);
+                startActivity(deviceIntent);
+            }
+        });
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
