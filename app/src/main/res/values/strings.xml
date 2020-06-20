@@ -19,4 +19,7 @@
 
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
+    <string name="sp02">SP02</string>
+    <string name="heart_rate">HEART RATE</string>
+    <string name="raw_data">RAW DATA</string>
 </resources>

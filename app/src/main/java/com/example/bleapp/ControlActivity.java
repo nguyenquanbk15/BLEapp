@@ -16,6 +16,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -34,10 +36,11 @@ public class ControlActivity extends AppCompatActivity {
     private TextView mConnectionState;
     private TextView mDataField;
     private TextView mDevice;
+    private Button btnButton;
     private String mDeviceAddress;
     private String mDeviceName;
     private ExpandableListView mGattServicesList;
-    private BluetoothLeService mBluetoothLeService;
+    public static BluetoothLeService mBluetoothLeService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
@@ -72,6 +75,42 @@ public class ControlActivity extends AppCompatActivity {
         String device = deviceIntent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         mDeviceAddress = device.substring(device.length() - 17);
         mDevice.setText(mDeviceAddress);
+        btnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ControlActivity.this, Sp02Activity.class);
+                startActivity(intent);
+            }
+        });
+
+        mGattServicesList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (mGattCharacteristics != null) {
+                    final BluetoothGattCharacteristic characteristic =
+                            mGattCharacteristics.get(groupPosition).get(childPosition);
+                    final int charaProp = characteristic.getProperties();
+                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+                        // If there is an active notification on a characteristic, clear
+                        // it first so it doesn't update the data field on the user interface.
+                        if (mNotifyCharacteristic != null) {
+                            mBluetoothLeService.setCharacteristicNotification(
+                                    mNotifyCharacteristic, false);
+                            mNotifyCharacteristic = null;
+                        }
+                        mBluetoothLeService.readCharacteristic(characteristic);
+                    }
+                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                        mNotifyCharacteristic = characteristic;
+                        mBluetoothLeService.setCharacteristicNotification(
+                                characteristic, true);
+                    }
+                    return true;
+                }
+
+                return false;
+            }
+        });
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -132,6 +171,7 @@ public class ControlActivity extends AppCompatActivity {
         mDevice = findViewById(R.id.tv_device_address);
         mConnectionState = findViewById(R.id.tv_connection_state);
         mDataField = findViewById(R.id.tv_data_value);
+        btnButton = findViewById(R.id.btn_button);
 
         mGattServicesList = this.findViewById(R.id.elv_gatt_services_list);
     }
