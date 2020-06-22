@@ -1,6 +1,8 @@
 package com.example.bleapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -10,8 +12,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -31,6 +35,30 @@ public class Sp02Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sp02);
+
+        final BottomNavigationView bnvControl = findViewById(R.id.bnv_control);
+        bnvControl.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.menu_sp02:
+                        selectedFragment = new SpO2Fragment();
+                        break;
+                    case R.id.menu_heart_rate:
+                        selectedFragment = new HeartRateFragment();
+                        break;
+                    case R.id.menu_raw_data:
+                        selectedFragment = new RawDataFragment();
+                        break;
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_display, selectedFragment).commit();
+                return true;
+            }
+        });
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_display, new SpO2Fragment()).commit();
         /*
         tvData = findViewById(R.id.tv_data_AT09);
         gvLineChart = findViewById(R.id.gv_line_chart);

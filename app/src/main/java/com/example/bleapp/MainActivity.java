@@ -12,6 +12,9 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,9 +30,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothLeScanner mBluetoothLeScanner;
     private ArrayAdapter<String> BLEListAdapter;
     private ArrayList<String> listDevice = new ArrayList<>();
 
@@ -56,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mScanning) {
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    scanLeDevice(false);
+                    //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    //mBluetoothLeScanner.stopScan((ScanCallback) mLeScanCallback);
                     mScanning = false;
                 }
                 String device = (String) parent.getItemAtPosition(position);
@@ -81,11 +88,13 @@ public class MainActivity extends AppCompatActivity {
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
+
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
+        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
     }
 
     @Override
@@ -163,16 +172,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mBluetoothLeScanner.stopScan(mScanCallback);
                     invalidateOptionsMenu();
                 }
             }, SCAN_PERIOD);
 
             mScanning = true;
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            //mBluetoothAdapter.startLeScan(mLeScanCallback);
+            mBluetoothLeScanner.startScan(mScanCallback);
         } else {
             mScanning = false;
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothLeScanner.stopScan(mScanCallback);
         }
         invalidateOptionsMenu();
     }
@@ -202,6 +214,48 @@ public class MainActivity extends AppCompatActivity {
                     //mLeDeviceListAdapter.notifyDataSetChanged();
                 }
             });
+        }
+    };
+
+    private ScanCallback mScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, final ScanResult result) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    BluetoothDevice device = result.getDevice();
+                    if(device != null) {
+                        String address = device.getAddress();
+                        if(!listDevice.contains(address)) {
+                            if(device.getName() != null){
+                                String name = device.getName();
+                                BLEListAdapter.add(name + "\n" + address);
+                            }
+                            else{
+                                BLEListAdapter.add("No Name" + "\n" + address);
+                                //listAdapter.add(address);
+                            }
+                            listDevice.add(address);
+                            BLEListAdapter.notifyDataSetChanged();
+                        }
+                    }
+                    //mLeDeviceListAdapter.addDevice(device);
+                    //mLeDeviceListAdapter.notifyDataSetChanged();
+                }
+            });
+            super.onScanResult(callbackType, result);
+
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
         }
     };
     private boolean checkCoarseLocationPermission() {

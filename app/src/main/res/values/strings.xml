@@ -8,11 +8,11 @@
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="title_devices">BLE Device Scan</string>
     <string name="error_bluetooth_not_supported">Bluetooth is not supported.</string>
-    <string name="device_address">Device Address:</string>
-    <string name="state">State:</string>
+    <string name="device_address">Address:</string>
+    <string name="state">Status:</string>
     <string name="none_state">Disconnect</string>
-    <string name="data">Data:</string>
-    <string name="no_data">No data</string>
+    <string name="data">Device Name:</string>
+    <string name="no_data">No Device</string>
 
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
@@ -22,4 +22,10 @@
     <string name="sp02">SP02</string>
     <string name="heart_rate">HEART RATE</string>
     <string name="raw_data">RAW DATA</string>
+    <string name="display_data">DISPLAY DATA</string>
+    <string name="no_address">No Address</string>
+    <string name="spo2_fragment">SPO2 :</string>
+    <string name="current_spo2">Current SpO2</string>
+    <string name="bpm">BPM:</string>
+    <string name="current_bpm">Current bpm</string>
 </resources>

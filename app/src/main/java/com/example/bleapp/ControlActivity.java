@@ -34,11 +34,11 @@ public class ControlActivity extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
     private TextView mConnectionState;
-    private TextView mDataField;
+    private TextView mDeviceName;
     private TextView mDevice;
     private Button btnButton;
     private String mDeviceAddress;
-    private String mDeviceName;
+    private String DeviceName;
     private ExpandableListView mGattServicesList;
     public static BluetoothLeService mBluetoothLeService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
@@ -74,6 +74,8 @@ public class ControlActivity extends AppCompatActivity {
         final Intent deviceIntent = getIntent();
         String device = deviceIntent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         mDeviceAddress = device.substring(device.length() - 17);
+        DeviceName = device.substring(0, device.length() - 18);
+        mDeviceName.setText(DeviceName);
         mDevice.setText(mDeviceAddress);
         btnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +107,8 @@ public class ControlActivity extends AppCompatActivity {
                         mBluetoothLeService.setCharacteristicNotification(
                                 characteristic, true);
                     }
+                    btnButton.setEnabled(true);
+
                     return true;
                 }
 
@@ -157,11 +161,11 @@ public class ControlActivity extends AppCompatActivity {
                 break;
             case R.id.menu_disconnect:
                 mBluetoothLeService.disconnect();
+                btnButton.setEnabled(false);
                 break;
             case android.R.id.home:
-                onBackPressed();
-                break;
             case R.id.back:
+                onBackPressed();
                 break;
         }
         return true;
@@ -170,7 +174,7 @@ public class ControlActivity extends AppCompatActivity {
     private void initWidgets() {
         mDevice = findViewById(R.id.tv_device_address);
         mConnectionState = findViewById(R.id.tv_connection_state);
-        mDataField = findViewById(R.id.tv_data_value);
+        mDeviceName = findViewById(R.id.tv_data_value);
         btnButton = findViewById(R.id.btn_button);
 
         mGattServicesList = this.findViewById(R.id.elv_gatt_services_list);
@@ -192,9 +196,11 @@ public class ControlActivity extends AppCompatActivity {
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+            }
+            /*else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             }
+            */
         }
     };
 
@@ -203,7 +209,7 @@ public class ControlActivity extends AppCompatActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        //intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
 
@@ -218,12 +224,12 @@ public class ControlActivity extends AppCompatActivity {
 
     private void clearUI() {
         mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-        mDataField.setText(R.string.no_data);
+        //mDataField.setText(R.string.no_data);
     }
 
     private void displayData(String data) {
         if (data != null) {
-            mDataField.setText(data);
+            //mDataField.setText(data);
         }
     }
 
