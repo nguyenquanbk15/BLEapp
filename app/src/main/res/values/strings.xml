@@ -28,4 +28,5 @@
     <string name="current_spo2">Current SpO2</string>
     <string name="bpm">BPM:</string>
     <string name="current_bpm">Current bpm</string>
+    <string name="device_uuid">Device UUID:</string>
 </resources>

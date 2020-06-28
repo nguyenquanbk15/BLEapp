@@ -14,7 +14,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-public class SpO2Fragment extends Fragment {
+public class SpO2Fragment extends Fragment implements MyInterface{
     private GraphView SpO2Graph;
     private TextView tvSpO2Idx;
     private LineGraphSeries<DataPoint> mSeries;
@@ -30,5 +30,10 @@ public class SpO2Fragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void setResult(String message) {
+
     }
 }

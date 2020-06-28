@@ -1,43 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Sp02Activity"
-    android:layout_margin="16dp">
+    android:layout_margin="16dp"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/fragment_display">
+        android:orientation="horizontal">
+
         <TextView
-            android:text="@string/app_name"
+            android:textStyle="bold|italic"
+            android:textColor="@color/UUID"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/device_uuid" />
+
         <TextView
+            android:textSize="20sp"
+            android:id="@+id/tv_uuid"
+            android:textColor="@color/UUID"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Device UUID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="@string/device_uuid" />
     </LinearLayout>
 
-
-    <FrameLayout
-        android:id="@+id/fragment_display"
+    <LinearLayout
+        android:layout_weight="1"
+        android:id="@+id/ln_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bnv_control" />
+        android:layout_height="0dp">
+        <FrameLayout
+            android:id="@+id/fragment_display"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bnv_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/option_display_data_menu" />
 
-</RelativeLayout>
+</LinearLayout>

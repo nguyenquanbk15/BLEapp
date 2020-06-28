@@ -66,15 +66,22 @@ public class BluetoothLeService extends Service {
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HM_10);
 
+    private final int OFFSET = 0;
+    private String dataReceive = "";
+    private int flag = 0;
+    private static final int MTU = 40;
+
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
+
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED;
                 mConnectionState = STATE_CONNECTED;
+                //mBluetoothGatt.requestMtu(MTU);
                 broadcastUpdate(intentAction);
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
@@ -111,6 +118,15 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+
+            if(status == BluetoothGatt.GATT_SUCCESS){
+                Log.d("AndroidLE:", "onMtuChanged: MTU has changed" + mtu);
+            }
+            super.onMtuChanged(gatt, mtu, status);
         }
     };
 
@@ -150,22 +166,38 @@ public class BluetoothLeService extends Service {
             }
         }
          */
-        Log.d("AndroidLE", "broadcastUpdate()");
-
+        if(flag == 0){
+            flag++;
+        }
+        else {
+            String dataString = characteristic.getStringValue(OFFSET);
+            Log.d("AndroidLE", dataString);
+            dataReceive = dataReceive + dataString;
+            if (dataString.contains("\n")) {
+                intent.putExtra(EXTRA_DATA, dataReceive);
+                sendBroadcast(intent);
+                Log.d("AndroidLE", "receive string: " + dataReceive);
+                dataReceive = "";
+            }
+        }
+        /*
+        Log.d("AndroidLE", dataString);
         final byte[] data = characteristic.getValue();
         Log.d("AndroidLE", "data.length: " + data.length);
+        Log.d("AndroidLE", "" + dataString);
 
         if (data != null && data.length > 0) {
             final StringBuilder stringBuilder = new StringBuilder(data.length);
             for(byte byteChar : data) {
                 stringBuilder.append(String.format("%02X ", byteChar));
-                Log.d("AndroidLE", String.format("%02X ", byteChar));
+                //Log.d("AndroidLE", String.format("%02X ", byteChar));
             }
 
-            intent.putExtra(EXTRA_DATA, new String(data) /*+ "\n" + stringBuilder.toString() */);
+            intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString() );
         }
 
         sendBroadcast(intent);
+        */
     }
 
     public class LocalBinder extends Binder {
@@ -251,6 +283,7 @@ public class BluetoothLeService extends Service {
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         mConnectionState = STATE_CONNECTING;

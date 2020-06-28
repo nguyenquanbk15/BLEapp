@@ -14,7 +14,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-public class HeartRateFragment extends Fragment {
+public class HeartRateFragment extends Fragment implements MyInterface{
 
     private GraphView HeartRateGraph;
     private TextView tvHeartRateIdx;
@@ -30,5 +30,10 @@ public class HeartRateFragment extends Fragment {
         HeartRateGraph.addSeries(mSeries);
 
         return view;
+    }
+
+    @Override
+    public void setResult(String message) {
+
     }
 }

@@ -13,7 +13,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-public class RawDataFragment extends Fragment {
+public class RawDataFragment extends Fragment implements MyInterface{
     private GraphView RedDataGraph;
     private GraphView IRedDataGraph;
     private LineGraphSeries<DataPoint> mSeriesRed;
@@ -32,5 +32,10 @@ public class RawDataFragment extends Fragment {
         IRedDataGraph.addSeries(mSeriesIRed);
 
         return view;
+    }
+
+    @Override
+    public void setResult(String message) {
+
     }
 }
