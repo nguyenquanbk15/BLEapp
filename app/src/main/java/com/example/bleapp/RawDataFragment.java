@@ -38,4 +38,14 @@ public class RawDataFragment extends Fragment implements MyInterface{
     public void setResult(String message) {
 
     }
+
+    @Override
+    public void setFragment(int valueX, int valueY, int time) {
+
+    }
+
+    @Override
+    public void setFragment(int value, int time) {
+
+    }
 }

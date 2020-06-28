@@ -171,7 +171,7 @@ public class BluetoothLeService extends Service {
         }
         else {
             String dataString = characteristic.getStringValue(OFFSET);
-            Log.d("AndroidLE", dataString);
+            //Log.d("AndroidLE", dataString);
             dataReceive = dataReceive + dataString;
             if (dataString.contains("\n")) {
                 intent.putExtra(EXTRA_DATA, dataReceive);

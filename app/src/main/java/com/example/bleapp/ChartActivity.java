@@ -33,6 +33,7 @@ public class ChartActivity extends AppCompatActivity {
     private int red = 0;
     private int ired = 0;
     private int CPUTime = 0;
+    private int bpm = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class ChartActivity extends AppCompatActivity {
         // bmp graph
         bpmSeries = new LineGraphSeries<>();
         bpmGraph.addSeries(bpmSeries);
+
         bpmGraph.getViewport().setXAxisBoundsManual(true);
         bpmGraph.getViewport().setMinX(0);
         bpmGraph.getViewport().setMaxX(10000);
@@ -104,15 +106,18 @@ public class ChartActivity extends AppCompatActivity {
                 if(data != null){
                     try {
                         JSONObject JSONData = new JSONObject(data);
-                        Log.d("ChartActivity", "onReceive: " + JSONData.toString());
-                        /*
+                        //Log.d("ChartActivity", "onReceive: " + JSONData.toString());
+
                         JSONObject JSONPayLoad = JSONData.getJSONArray("payload").getJSONObject(0);
-                        Log.d("AndroidLE", "JSON Array: " + JSONPayLoad.toString());
-                        tvSpO2.setText(JSONPayLoad.getInt("spO2") + "%");
-                        tvHeartRate.setText(JSONPayLoad.getInt("BPM") + "bpm");
+                        //Log.d("AndroidLE", "JSON Array: " + JSONPayLoad.toString());
+                        tvSpO2.setText(JSONPayLoad.getInt("spO2") + " %");
+                        tvHeartRate.setText(JSONPayLoad.getInt("BPM") + " bpm");
+
                         red = JSONPayLoad.getInt("Red");
                         ired = JSONPayLoad.getInt("IR");
                         CPUTime = JSONPayLoad.getInt("cpuTimestamp");
+                        bpm = JSONPayLoad.getInt("BPM");
+                        //Log.d("ChartActivity", "onReceive: " + red + " " + ired + " " + CPUTime);
 
                         if(flag == 0) {
                             String deviceUUID = JSONData.getString("device_uuid");
@@ -121,13 +126,15 @@ public class ChartActivity extends AppCompatActivity {
                             timestamp = CPUTime;
                             flag++;
                         }
+
                         int time = CPUTime - timestamp;
-                        redSeries.appendData(new DataPoint(red,time), true, 250);
-                        iredSeries.appendData(new DataPoint(ired, time), true, 250);
-                        bpmSeries.appendData(new DataPoint(ired, time), true, 250);
-                         */
+
+                        redSeries.appendData(new DataPoint(time,red), true, 250);
+                        iredSeries.appendData(new DataPoint(time, ired), true, 250);
+                        bpmSeries.appendData(new DataPoint(time,bpm), true, 250);
+
                     } catch (JSONException e) {
-                        Log.d("ChartActivity", "Could not parse malformed JSON:" + data);
+                        Log.d("ChartActivity", "Could not parse malformed JSON: " + data);
                     }
                 }
 

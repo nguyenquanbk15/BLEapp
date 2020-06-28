@@ -33,7 +33,11 @@ public class SpO2Fragment extends Fragment implements MyInterface{
     }
 
     @Override
-    public void setResult(String message) {
+    public void setResult(String message) {}
 
-    }
+    @Override
+    public void setFragment(int valueX, int valueY, int time) {}
+
+    @Override
+    public void setFragment(int value, int time) {}
 }

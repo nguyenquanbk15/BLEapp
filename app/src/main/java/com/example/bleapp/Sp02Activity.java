@@ -21,9 +21,12 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.UUID;
 
-public class Sp02Activity extends AppCompatActivity implements MyInterface{
+public  class Sp02Activity extends AppCompatActivity implements MyInterface{
 
     private TextView tvUUID;
 
@@ -33,6 +36,17 @@ public class Sp02Activity extends AppCompatActivity implements MyInterface{
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
     private Fragment activeFragment = heartRateFragment;
+
+    private int flag = 0;
+    private int timestamp = 0;
+    private int time = 0;
+    private String MyUUID = "";
+
+    private int red = 0;
+    private int ired = 0;
+    private int CPUTime = 0;
+    private int spo2 = 0;
+    private int bpm = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,16 +121,14 @@ public class Sp02Activity extends AppCompatActivity implements MyInterface{
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                //tvData.setText(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
 
                 String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                //if(data != null) {
-                    //if (data.contains(",")) {
-                        //int[] dataInt = generateData(data);
-                        //mSeries.appendData(new DataPoint(dataInt[0], dataInt[1]), true, 40);
-                    //}
-                //}
-
+                try {
+                    Sp02Activity.this.setResult(data);
+                } catch (JSONException e) {
+                    //e.printStackTrace();
+                    Log.d("SpO2Activity", "Could not parse malformed JSON: " + data);
+                }
             }
         }
     };
@@ -133,14 +145,46 @@ public class Sp02Activity extends AppCompatActivity implements MyInterface{
     };
 
     @Override
-    public void setResult(String message) {
+    public void setResult(String message) throws JSONException {
         final SpO2Fragment SpO2Fragment = (SpO2Fragment) getSupportFragmentManager().findFragmentByTag("SpO2 Fragment");
         final HeartRateFragment bpmFragment = (HeartRateFragment) getSupportFragmentManager().findFragmentByTag("Heart Rate Fragment");
         final RawDataFragment dataFragment = (RawDataFragment) getSupportFragmentManager().findFragmentByTag("Raw Fragment");
+
+        JSONObject JSONData = new JSONObject(message);
+        JSONObject JSONPayLoad = JSONData.getJSONArray("payload").getJSONObject(0);
+        //Log.d("AndroidLE", "JSON Array: " + JSONPayLoad.toString());
+        red = JSONPayLoad.getInt("Red");
+        ired = JSONPayLoad.getInt("IR");
+        CPUTime = JSONPayLoad.getInt("cpuTimestamp");
+        bpm = JSONPayLoad.getInt("BPM");
+        spo2 = JSONPayLoad.getInt("spO2");
+        if(flag == 0) {
+            tvUUID.setText(JSONData.getString("device_uuid"));
+            timestamp = CPUTime;
+            flag++;
+        }
+        time = CPUTime - timestamp;
+        if(SpO2Fragment != null) {
+            spO2Fragment.setFragment(spo2, time);
+        }
+        if(bpmFragment != null) {
+            bpmFragment.setFragment(bpm, time);
+        }
+        if(dataFragment != null) {
+            dataFragment.setFragment(red, ired, time);
+        }
     }
+
+    @Override
+    public void setFragment(int valueX, int valueY, int time) {}
+
+    @Override
+    public void setFragment(int value, int time) {}
 
 }
 
 interface MyInterface{
-    public void setResult(String message);
+    public void setResult(String message) throws JSONException;
+    public void setFragment(int valueX, int valueY, int time);
+    public void setFragment(int value, int time);
 }
