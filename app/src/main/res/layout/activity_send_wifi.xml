@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <ListView
+        android:layout_marginTop="16dp"
         android:id="@+id/lv_list_wifi"
         android:layout_weight="1"
         android:layout_width="match_parent"
