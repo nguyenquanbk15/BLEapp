@@ -29,4 +29,7 @@
     <string name="bpm">BPM:</string>
     <string name="current_bpm">Current bpm</string>
     <string name="device_uuid">Device UUID:</string>
+    <string name="send_data">SEND DATA</string>
+    <string name="list_wifi">LIST WIFI</string>
+    <string name="list_ble_device">LIST BLE DEVICE</string>
 </resources>

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
@@ -37,14 +38,15 @@ public class ControlActivity extends AppCompatActivity {
     private TextView mDeviceName;
     private TextView mDevice;
     private Button btnButton;
+    private Button btnSendData;
     private String mDeviceAddress;
-    private String DeviceName;
     private ExpandableListView mGattServicesList;
     public static BluetoothLeService mBluetoothLeService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
+    private BluetoothGattCharacteristic mWriteCharacteristic;
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
@@ -74,13 +76,25 @@ public class ControlActivity extends AppCompatActivity {
         final Intent deviceIntent = getIntent();
         String device = deviceIntent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         mDeviceAddress = device.substring(device.length() - 17);
-        DeviceName = device.substring(0, device.length() - 18);
-        mDeviceName.setText(DeviceName);
+        String deviceName = device.substring(0, device.length() - 18);
+        mDeviceName.setText(deviceName);
         mDevice.setText(mDeviceAddress);
         btnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ControlActivity.this, ChartActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnSendData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String flag = "send_data";
+                byte[] flagByte = flag.getBytes();
+                mWriteCharacteristic.setValue(flagByte);
+                mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
+
+                Intent intent = new Intent(ControlActivity.this, SendWifiActivity.class);
                 startActivity(intent);
             }
         });
@@ -107,8 +121,28 @@ public class ControlActivity extends AppCompatActivity {
                         mBluetoothLeService.setCharacteristicNotification(
                                 characteristic, true);
                     }
-                    btnButton.setEnabled(true);
 
+                    if (((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE) |
+                            (charaProp & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) > 0) {
+                        // writing characteristic functions
+                        mWriteCharacteristic = characteristic;
+                    }
+
+                    btnButton.setEnabled(true);
+                    btnSendData.setEnabled(true);
+                    /*
+                    final Handler loopHandler = new Handler();
+                    loopHandler.post(new Runnable () {
+                        @Override
+                        public void run() {
+                            String wifi = "hello world";
+                            byte[] wifiByte = wifi.getBytes();
+                            mWriteCharacteristic.setValue(wifiByte);
+                            mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
+                            loopHandler.postDelayed(this, 1000);
+                        }
+                    });
+                     */
                     return true;
                 }
 
@@ -176,6 +210,7 @@ public class ControlActivity extends AppCompatActivity {
         mConnectionState = findViewById(R.id.tv_connection_state);
         mDeviceName = findViewById(R.id.tv_data_value);
         btnButton = findViewById(R.id.btn_button);
+        btnSendData = findViewById(R.id.btn_send_data);
 
         mGattServicesList = this.findViewById(R.id.elv_gatt_services_list);
     }

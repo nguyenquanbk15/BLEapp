@@ -71,12 +71,29 @@
         android:id="@+id/elv_gatt_services_list"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
-    <Button
-        android:background="#0364DA"
-        android:text="@string/display_data"
-        android:id="@+id/btn_button"
+
+    <LinearLayout
+        android:weightSum="2"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"/>
+        android:layout_height="wrap_content" >
+        <Button
+            android:layout_weight="1"
+            android:background="#0364DA"
+            android:text="@string/display_data"
+            android:id="@+id/btn_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"/>
+        <Button
+            android:id="@+id/btn_send_data"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:background="#0364DA"
+            android:text="@string/send_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </LinearLayout>
