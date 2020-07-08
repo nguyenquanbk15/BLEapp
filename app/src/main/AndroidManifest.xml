@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SendWifiActivity"></activity>
+        <activity android:name=".LoginWifiActivity"></activity>
+        <activity android:name=".SendWifiActivity" />
         <activity android:name=".ChartActivity" />
         <activity
             android:name=".Sp02Activity"

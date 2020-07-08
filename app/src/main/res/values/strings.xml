@@ -32,4 +32,15 @@
     <string name="send_data">SEND DATA</string>
     <string name="list_wifi">LIST WIFI</string>
     <string name="list_ble_device">LIST BLE DEVICE</string>
+    <string name="wifi_name">Wifi Name</string>
+    <string name="password">Password:</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="reload">Reload</string>
+    <string name="emit_to_server">Emit to server</string>
+    <string name="disable_emit">Disable emit</string>
+    <string name="device_config">DEVICE CONFIG</string>
+    <string name="_0">0000</string>
+    <string name="level">Level:</string>
+    <string name="channel_wifi">channel:</string>
+    <string name="encryption">encryption:</string>
 </resources>

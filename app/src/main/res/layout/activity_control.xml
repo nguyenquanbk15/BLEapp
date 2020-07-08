@@ -73,6 +73,7 @@
         android:layout_height="0dp" />
 
     <LinearLayout
+        android:layout_marginTop="16dp"
         android:weightSum="2"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -91,7 +92,7 @@
             android:layout_weight="1"
             android:enabled="false"
             android:background="#0364DA"
-            android:text="@string/send_data"
+            android:text="@string/device_config"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

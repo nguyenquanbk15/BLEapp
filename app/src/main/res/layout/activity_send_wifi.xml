@@ -22,13 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp" />
     <Button
+        android:id="@+id/btn_reload"
         android:layout_marginTop="16dp"
-        android:background="#0364DA"
-        android:text="@string/display_data"
-        android:id="@+id/btn_send_and_display"
+        android:background="@color/colorAccent"
+        android:text="@string/reload"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"/>
-
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

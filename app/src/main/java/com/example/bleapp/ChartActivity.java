@@ -82,7 +82,7 @@ public class ChartActivity extends AppCompatActivity {
     }
 
     private void initWidgets() {
-        tvSpO2 = findViewById(R.id.tv_spo2_text_view);
+            tvSpO2 = findViewById(R.id.tv_spo2_text_view);
         tvHeartRate = findViewById(R.id.tv_bpm_text_view);
         tvUUID = findViewById(R.id.tv_device_uuid);
 
@@ -97,12 +97,9 @@ public class ChartActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-
-
                 String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
                 //data = data.replace("\r", "").replace("\n", "");
                 //tvUUID.setText(data);
-
                 if(data != null){
                     try {
                         JSONObject JSONData = new JSONObject(data);

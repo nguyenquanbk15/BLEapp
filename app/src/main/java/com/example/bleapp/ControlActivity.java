@@ -23,6 +23,9 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +36,13 @@ public class ControlActivity extends AppCompatActivity {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String COMMAND = "command";
+    public static final String CONNECT_WIFI = "Connect to wifi";
+    public static final String ENABLE_EMIT = "Enable emit";
+    public static final String DISABLE_EMIT = "Disable emit";
+    public static final String SCAN_WIFI = "Scan nearby wifi";
+    public static final String WIFI_NAME = "wifi ssid";
+    public static final String WIFI_PASS = "wifi pass";
 
     private TextView mConnectionState;
     private TextView mDeviceName;
@@ -46,7 +56,7 @@ public class ControlActivity extends AppCompatActivity {
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
-    private BluetoothGattCharacteristic mWriteCharacteristic;
+    public static BluetoothGattCharacteristic mWriteCharacteristic;
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
@@ -89,10 +99,10 @@ public class ControlActivity extends AppCompatActivity {
         btnSendData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String flag = "send_data";
-                byte[] flagByte = flag.getBytes();
-                mWriteCharacteristic.setValue(flagByte);
-                mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
+                //String flag = "send_data";
+                //byte[] flagByte = flag.getBytes();
+                //mWriteCharacteristic.setValue(flagByte);
+                //mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
 
                 Intent intent = new Intent(ControlActivity.this, SendWifiActivity.class);
                 startActivity(intent);
@@ -130,19 +140,38 @@ public class ControlActivity extends AppCompatActivity {
 
                     btnButton.setEnabled(true);
                     btnSendData.setEnabled(true);
-                    /*
-                    final Handler loopHandler = new Handler();
-                    loopHandler.post(new Runnable () {
-                        @Override
-                        public void run() {
-                            String wifi = "hello world";
-                            byte[] wifiByte = wifi.getBytes();
-                            mWriteCharacteristic.setValue(wifiByte);
-                            mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
-                            loopHandler.postDelayed(this, 1000);
-                        }
-                    });
-                     */
+                    //JSONObject jsonDisableEmit = new JSONObject();
+                    //try {
+                    //    jsonDisableEmit.put(ControlActivity.COMMAND, ControlActivity.DISABLE_EMIT);
+                    //   Log.d("ControlActivity","data: " + jsonDisableEmit.toString());
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    //String disableEmitData = jsonDisableEmit.toString() + '\n';
+//                    byte[] noEmit = disableEmitData.getBytes();
+//                    mWriteCharacteristic.setValue(noEmit);
+//                    mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
+//                    for(int i = 0; i < 1; i++){
+//                        String wifi = "hello world\n";
+//                        byte[] wifiByte = wifi.getBytes();
+//                        mWriteCharacteristic.setValue(wifiByte);
+//                        mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
+//
+//                    }
+
+
+//                    final Handler loopHandler = new Handler();
+//                    loopHandler.post(new Runnable () {
+//                        @Override
+//                        public void run() {
+//                            String wifi = "hello world\n";
+//                            byte[] wifiByte = wifi.getBytes();
+//                            mWriteCharacteristic.setValue(wifiByte);
+//                            mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
+//                            //loopHandler.postDelayed(this, 1000);
+//                        }
+//                    });
+
                     return true;
                 }
 
