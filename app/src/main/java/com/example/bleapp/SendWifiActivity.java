@@ -32,6 +32,8 @@ public class SendWifiActivity extends AppCompatActivity {
     private ArrayList<Wifi> WifiList = new ArrayList<>();
     public static final String WIFI_NAME = "WIFI NAME";
 
+    private final String NONE = "none";
+
     //private int flag = 0;
 
     private BluetoothGattCharacteristic mWriteCharacteristic;
@@ -117,12 +119,19 @@ public class SendWifiActivity extends AppCompatActivity {
                     Log.d( "SenWifiActivity", "" + jsonListWifi.toString());
                     ArrayList<Wifi> listWifi = new ArrayList<>();
                     int len = jsonListWifi.length();
+                    String channel = "";
                     for (int i = 0; i < len; i++){
                         JSONObject JSONItem = jsonListWifi.getJSONObject(i);
-                        Wifi dataItem = new Wifi(JSONItem.getString("wifi ssid"),
-                                                JSONItem.getString("wifi strength"),
-                                                JSONItem.getString("wifi channel"),
-                                                JSONItem.getString("wifi encryption"));
+                        if(JSONItem.has("channel")) {
+                            channel = JSONItem.getString("channel");
+                        }
+                        else{
+                            channel = NONE;
+                        }
+                        Wifi dataItem = new Wifi(JSONItem.getString("ssid"),
+                                                JSONItem.getString("rssi"),
+                                                channel,
+                                                JSONItem.getString("enc"));
                         listWifi.add(dataItem);
                     }
 //                    if (flag == 0) {

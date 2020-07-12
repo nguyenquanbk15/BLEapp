@@ -4,10 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +22,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class LoginWifiActivity extends AppCompatActivity {
 
@@ -85,6 +92,18 @@ public class LoginWifiActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiveData, new IntentFilter(BluetoothLeService.ACTION_DATA_AVAILABLE));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiveData);
+    }
+
     private void initWidgets() {
         tvWifiName = findViewById(R.id.tv_wifi_name);
         edtPassWord = findViewById(R.id.edt_password);
@@ -132,4 +151,23 @@ public class LoginWifiActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    private final BroadcastReceiver receiveData = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+                try {
+                    JSONObject JSONData = new JSONObject(data);
+                    //JSONArray jsonListWifi = JSONData.getJSONArray("wifi list");
+                    Toast.makeText(context, ""+ JSONData.getString("command result"), Toast.LENGTH_SHORT).show();
+
+                } catch (JSONException e) {
+                    Log.d("SenWifiActivity", "Could not parse malformed JSON:" + data);
+                }
+            }
+        }
+    };
 }
