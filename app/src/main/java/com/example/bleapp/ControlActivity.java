@@ -92,6 +92,17 @@ public class ControlActivity extends AppCompatActivity {
         btnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                JSONObject jsonDisableEmit = new JSONObject();
+                try {
+                    jsonDisableEmit.put(COMMAND, DISABLE_EMIT);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String disableEmitData = jsonDisableEmit.toString() + '\n';
+                Log.d("Control Activity", "Command" + disableEmitData);
+                byte[] noEmit = disableEmitData.getBytes();
+                mWriteCharacteristic.setValue(noEmit);
+                mBluetoothLeService.writeCharacteristic(mWriteCharacteristic);
                 Intent intent = new Intent(ControlActivity.this, ChartActivity.class);
                 startActivity(intent);
             }

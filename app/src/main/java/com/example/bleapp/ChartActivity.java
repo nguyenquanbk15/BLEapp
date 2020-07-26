@@ -53,6 +53,7 @@ public class ChartActivity extends AppCompatActivity {
         rawGraph.getViewport().setXAxisBoundsManual(true);
         rawGraph.getViewport().setMinX(0);
         rawGraph.getViewport().setMaxX(10000);
+        rawGraph.getViewport().setScalable(true);
         rawGraph.setTitle("Raw Data");
         rawGraph.getGridLabelRenderer().setHorizontalAxisTitle("times");
         rawGraph.getGridLabelRenderer().setVerticalAxisTitle("values");
@@ -118,17 +119,17 @@ public class ChartActivity extends AppCompatActivity {
 
                         if(flag == 0) {
                             String deviceUUID = JSONData.getString("device_uuid");
-                            //deviceUUID = deviceUUID.substring(4,8);
-                            tvUUID.setText(deviceUUID);
+                            String deviceUUIDs = deviceUUID.substring(4,8);
+                            tvUUID.setText(deviceUUIDs);
                             timestamp = CPUTime;
                             flag++;
                         }
 
                         int time = CPUTime - timestamp;
 
-                        redSeries.appendData(new DataPoint(time,red), true, 250);
-                        iredSeries.appendData(new DataPoint(time, ired), true, 250);
-                        bpmSeries.appendData(new DataPoint(time,bpm), true, 250);
+                        redSeries.appendData(new DataPoint(time,red), true, 1500);
+                        iredSeries.appendData(new DataPoint(time, ired), true, 1500);
+                        bpmSeries.appendData(new DataPoint(time,bpm), true, 150);
 
                     } catch (JSONException e) {
                         Log.d("ChartActivity", "Could not parse malformed JSON: " + data);
