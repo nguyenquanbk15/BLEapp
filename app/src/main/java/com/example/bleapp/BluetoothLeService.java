@@ -176,7 +176,7 @@ public class BluetoothLeService extends Service {
             if (dataString.contains("\n")) {
                 intent.putExtra(EXTRA_DATA, dataReceive);
                 sendBroadcast(intent);
-                Log.d("AndroidLE", "receive string: " + dataReceive);
+                //Log.d("BleDataReceive", dataReceive);
                 dataReceive = "";
             }
         }
